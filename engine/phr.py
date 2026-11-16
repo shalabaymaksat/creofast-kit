@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 os.chdir(os.environ.get('RAZBOR_WORK', '.'))
 import render as R
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import groqkey as t
+import whisp as t
 from paths import FF as _PFF
 key = t.load_api_key(); FF = _PFF
 n = int(sys.argv[1]); gap = float(sys.argv[2]) if len(sys.argv) > 2 else 0.45
@@ -18,7 +18,7 @@ for i, (s, e) in enumerate(vs):
     f = Path(f'chunks/p{n:02d}_{i:03d}.flac')
     subprocess.run([FF, '-v', 'error', '-y', '-ss', f'{max(0,s-0.05):.2f}', '-t', f'{e-s+0.15:.2f}', '-i', f'audio/{n:02d}.flac', '-c:a', 'flac', str(f)], check=True)
     for k in range(8):
-        r = requests.post("https://api.groq.com/openai/v1/audio/transcriptions", headers={"Authorization": f"Bearer {key}"},
+        r = t.post(None,
             data=[("model", "whisper-large-v3"), ("response_format", "json"), ("language", lang), ("temperature", "0")], files={"file": (f.name, f.open('rb'))}, timeout=120)
         if r.status_code == 200: tx = r.json().get('text', '').strip(); break
         time.sleep(12)

@@ -11,12 +11,12 @@ description: Таргет креативтерін (камераға сөйле�
 ## 0. Орта (сессия басында бір рет)
 ```bash
 [ -d ~/creofast-kit ] && git -C ~/creofast-kit pull -q || git clone -q --depth 1 https://github.com/shalabaymaksat/creofast-kit ~/creofast-kit
-bash ~/creofast-kit/setup.sh                                  # ffmpeg + numpy/pillow/requests/mediapipe; GROQ_API_KEY тексереді
+bash ~/creofast-kit/setup.sh                                  # ffmpeg + numpy/pillow/requests/mediapipe/faster-whisper
 source ~/creofast-kit/env.sh && python3 $E/assets.py          # жұмыс папкасы + қолжетімді B-roll тізімі
 ```
 - **Shell күйі командалар арасында сақталмайды** — әр Bash командасын `source ~/creofast-kit/env.sh && …` деп баста (`$E` = engine, `$CREO_HOME` = `<репо>/creofast`).
 - `git clone` не `pip` желіге шыға алмаса → тоқта, айт: Claude Code environment баптауында **Network access → Full** қою керек, сосын жаңа сессия ашу.
-- `GROQ_API_KEY жоқ` → тоқта, айт: console.groq.com → API Keys → Create API Key (тегін), сосын environment баптауы → **Environment variables** → `GROQ_API_KEY=<кілт>` қосып, жаңа сессия ашу. Кілтті чатқа жазуды сұрама.
+- Транскрипция — жергілікті Whisper (faster-whisper, CPU), API кілт керек емес. Бірінші транскрипцияда модель жүктеледі (large-v3 ~3 GB, 1–3 мин). Сессия баяу болса: `export CREO_WHISPER=large-v3-turbo` (жылдамырақ, бір модель).
 - `<репо>/creofast/assets/` бос болса — монтаж бәрібір жасалады (хук, субтитр, қию, логотип, сан стикерлері, Ads Manager). Бір рет айт: өз скриндерін/рилстерін/пікірлерін сол папкаларға салса, B-roll бай болады (кесте төменде).
 
 ## 1. Видеоны алу + жоба
@@ -28,7 +28,7 @@ source ~/creofast-kit/env.sh && python3 $E/new_project.py <жоба_аты> "htt
 Ары қарай әр команда: `source ~/creofast-kit/env.sh && cd $CREO_HOME/projects/<жоба_аты> && export RAZBOR_WORK=$PWD/ RAZBOR_SRC=$PWD/src/ && …`
 Орысша видео: `export CREO_LANG=ru` (транскрипцияның барлық қадамына).
 
-## 2. Транскрипция
+## 2. Транскрипция (жергілікті Whisper)
 ```bash
 RAZBOR_PROMPT="<видеодағы терминдер, өнім/бренд аты>" python3 -W ignore $E/stt_chunks.py N
 python3 -W ignore $E/stt_turbo.py N
@@ -88,4 +88,4 @@ cd "$(git rev-parse --show-toplevel)" && git add creofast/ && git commit -m "cre
 - Хук алғашқы 3,8 с кеудеде; кеуде эффектілері одан кейін басталады (автомат).
 - Келесі эффект алдыңғысын кеседі (логотиптен басқасы) — 1 с-тан қысқа қалғанын алып таста.
 - `freeze` нәтижесі `[]`; блюр/зум ауысу жоқ; сөз айтылмай тұрып экранда шықпайды.
-- Пайдаланушының видеосы мен активтерін реподан тыс жерге жіберме (тек Groq STT).
+- Пайдаланушының видеосы мен активтерін реподан тыс жерге жіберме (бәрі сессия ішінде өңделеді).

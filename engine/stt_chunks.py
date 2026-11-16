@@ -6,7 +6,7 @@ import requests
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from common import *
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import groqkey as t
+import whisp as t
 from paths import FF as _PFF
 key = t.load_api_key()
 PROMPT = os.environ.get("RAZBOR_PROMPT", "Claude, Instagram, рилс, таргет, клиент, курс.")
@@ -28,7 +28,7 @@ def job(arg):
             ("timestamp_granularities[]", "word"), ("timestamp_granularities[]", "segment")]
     for k in range(10):
         with f.open('rb') as fh:
-            r = requests.post("https://api.groq.com/openai/v1/audio/transcriptions", headers={"Authorization": f"Bearer {key}"}, data=data, files={"file": (f.name, fh)}, timeout=300)
+            r = t.post(None, data=data, files={"file": (f.name, fh)}, timeout=300)
         if r.status_code == 200: break
         time.sleep(20)
     j = r.json()
@@ -38,7 +38,7 @@ ONLY = [int(x) for x in sys.argv[1:]]
 for n in (ONLY or range(1, len(NAMES) + 1)):
     c = cuts_for(n); jobs += [(n, i, c[i], c[i+1]) for i in range(len(c)-1)]
 res = {}
-with ThreadPoolExecutor(2) as ex:
+with ThreadPoolExecutor(1) as ex:
     for n, i, a, b, w, txt in ex.map(job, jobs):
         res.setdefault(n, []).append((i, a, b, w, txt))
 for n, lst in res.items():

@@ -3,14 +3,14 @@ import sys, json, glob, subprocess, importlib.util, time, requests
 from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))); from common import *
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import groqkey as t
+import whisp as t
 from paths import FF as _PFF
 key = t.load_api_key(); n = int(sys.argv[1])
 mp4 = glob.glob(W + f'out/{n:02d}_*.mp4')[0]; fl = W + f'out/{n:02d}.check.flac'
 subprocess.run([FF, '-v', 'error', '-y', '-i', mp4, '-ac', '1', '-ar', '16000', fl], check=True)
 for k in range(8):
-    r = requests.post("https://api.groq.com/openai/v1/audio/transcriptions", headers={"Authorization": f"Bearer {key}"},
-        data=[("model", "whisper-large-v3"), ("response_format", "verbose_json"), ("language", "kk"), ("temperature", "0"), ("timestamp_granularities[]", "word")],
+    r = t.post(None,
+        data=[("model", "whisper-large-v3"), ("response_format", "verbose_json"), ("language", os.environ.get("CREO_LANG", "kk")), ("temperature", "0"), ("timestamp_granularities[]", "word")],
         files={"file": ("a.flac", open(fl, 'rb'))}, timeout=300)
     if r.status_code == 200: break
     time.sleep(15)

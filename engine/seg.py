@@ -2,7 +2,7 @@ import os
 import sys, subprocess, importlib.util, requests
 from pathlib import Path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import groqkey as t
+import whisp as t
 from paths import FF as _PFF
 key = t.load_api_key(); FF=_PFF
 a,b,model,lang=float(sys.argv[1]),float(sys.argv[2]),sys.argv[3],sys.argv[4]
@@ -12,5 +12,5 @@ subprocess.run([FF,'-v','error','-y','-ss',str(a),'-to',str(b),'-i','audio/'+(sy
 data=[("model",model),("response_format","verbose_json"),("temperature","0"),("timestamp_granularities[]","word")]
 if lang!='auto': data.append(("language",lang))
 if prompt: data.append(("prompt",prompt))
-r=requests.post("https://api.groq.com/openai/v1/audio/transcriptions",headers={"Authorization":f"Bearer {key}"},data=data,files={"file":(f.name,f.open('rb'))},timeout=300).json()
+r=t.post(None,data=data,files={"file":(f.name,f.open('rb'))},timeout=300).json()
 print(model,lang,a,b,"|",r.get("text")); print(" ".join(f"{w['word']}@{w['start']+a:.2f}" for w in r.get("words",[])))
