@@ -8,8 +8,7 @@
 # Жобаның broll2.py: `from lib import *` → BROLL2 = {N: [E('сөз', ұзақтығы, спек), ...]}
 # Санат бос болса, сол спек None болады да, E(...) эффектісі өздігінен түсіп қалады.
 import os, glob
-from paths import ASSETS as A
-MY = A + 'my/'
+from paths import MY
 _C = MY + '_c/'      # assets.py жасайтын қысқа/кішірейтілген көшірмелер (git-ке кірмейді)
 VID, IMG = ('.mp4', '.mov', '.m4v'), ('.png', '.jpg', '.jpeg', '.webp')
 

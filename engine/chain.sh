@@ -3,7 +3,7 @@
 #   cd projects/<аты>; ../../engine/chain.sh 1 2 3
 E=$(cd "$(dirname "$0")" && pwd); ROOT=$(dirname "$E"); W=$PWD
 export RAZBOR_WORK=$W/ RAZBOR_SRC=$W/src/
-DST=${CREO_DST:-$ROOT/ready}; mkdir -p out masks
+DST=${CREO_DST:-${CREO_HOME:-$ROOT}/ready}; mkdir -p out masks
 for n in "$@"; do
   nn=$(printf %02d $n)
   if [ ! -f masks/$nn.mp4 ]; then python3 "$E/mask.py" $n > masks/$n.log 2>&1 || { rm -f masks/$nn.mp4; echo "FAIL mask $n" >> out/chain.log; continue; }; fi

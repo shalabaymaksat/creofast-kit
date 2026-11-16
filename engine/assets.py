@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Өз активтеріңді дайындау + тізім: python3 engine/assets.py
- - assets/my/<санат>/ ішіндегі видеолардың қысқа, кішірейтілген көшірмесін assets/my/_c/ ішіне жасайды
+ - өз активтер папкасындағы (<CREO_HOME>/assets/<санат>/) видеолардың қысқа, кішірейтілген көшірмесін assets/my/_c/ ішіне жасайды
    (B-roll тез оқылады; түпнұсқа өзгермейді). Қайта іске қосса — тек жаңаларын өңдейді.
  - Қай санатта неше файл барын және қай B-roll эффектілері қолжетімді екенін басады.
 """
 import os, sys, glob, subprocess
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from paths import ASSETS, FF
-MY = ASSETS + 'my/'; C = MY + '_c/'
+from paths import MY, FF
+C = MY + '_c/'
 LEN = dict(reels=8, cases=8, works=8, long=90)
 SCALE = dict(reels='scale=-2:640', cases='scale=-2:640', works='scale=720:-2', long='scale=640:-2')
 for cat in LEN:

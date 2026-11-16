@@ -5,8 +5,10 @@
 """
 import os, sys, re, subprocess, shutil
 E = os.path.dirname(os.path.abspath(__file__)); ROOT = os.path.dirname(E)
+sys.path.insert(0, E); from paths import HOME
+HOME = HOME.rstrip('/')
 name, items = sys.argv[1], sys.argv[2:]
-P = os.path.join(ROOT, 'projects', name); os.makedirs(P + '/src', exist_ok=True)
+P = os.path.join(HOME, 'projects', name); os.makedirs(P + '/src', exist_ok=True); os.makedirs(os.path.join(HOME, 'inbox'), exist_ok=True)
 def fetch(url):
     import requests
     m = re.search(r'drive\.google\.com/(?:file/d/|open\?id=|uc\?id=)([\w-]+)', url)
@@ -16,13 +18,13 @@ def fetch(url):
     cd = r.headers.get('content-disposition', ''); m = re.search(r'filename="?([^";]+)', cd)
     fn = m.group(1) if m else (url.split('?')[0].rstrip('/').split('/')[-1] or 'video.mp4')
     if not fn.lower().endswith(('.mov', '.mp4', '.m4v')): fn += '.mp4'
-    out = os.path.join(ROOT, 'inbox', fn)
+    out = os.path.join(HOME, 'inbox', fn)
     with open(out, 'wb') as f:
         for ch in r.iter_content(1 << 20): f.write(ch)
     print('жүктелді:', fn, os.path.getsize(out) // (1 << 20), 'MB'); return out
-if not items: items = [os.path.join(ROOT, 'inbox', f) for f in sorted(os.listdir(os.path.join(ROOT, 'inbox'))) if f.lower().endswith(('.mov', '.mp4', '.m4v'))]
+if not items: items = [os.path.join(HOME, 'inbox', f) for f in sorted(os.listdir(os.path.join(HOME, 'inbox'))) if f.lower().endswith(('.mov', '.mp4', '.m4v'))]
 for it in items:
-    src = fetch(it) if it.startswith('http') else (it if os.path.exists(it) else os.path.join(ROOT, 'inbox', it))
+    src = fetch(it) if it.startswith('http') else (it if os.path.exists(it) else os.path.join(HOME, 'inbox', it))
     dst = os.path.join(P, 'src', os.path.basename(src))
     if not os.path.exists(dst): os.symlink(os.path.abspath(src), dst)
 for t in ('videos.py', 'broll2.py', 'cuts.py'):
