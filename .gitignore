@@ -1,0 +1,11 @@
+.DS_Store
+__pycache__/
+projects/*/audio/
+projects/*/chunks/
+projects/*/masks/
+projects/*/out/
+projects/*/test/
+projects/*/src/
+inbox/*
+!inbox/.gitkeep
+assets/my/_c/
